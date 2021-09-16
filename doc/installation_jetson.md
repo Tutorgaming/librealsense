@@ -6,25 +6,26 @@
 
 ## Getting started
 
-1. **Prerequisites:**
+### 1. **Prerequisites:**
 
   * NVIDIA® **Jetson Nano™**, **Jetson TX2™** and **Jetson AGX Xavier™** board (may also work on other Jetson devices)
   * RealSense **D415**, **D435**, **D435i**, **D455**, **L515**, **SR300** and **T265** Camera devices.
 
 
-2. **Establish Developer's Environment**
+### 2. **Establish Developer's Environment**
 Follow [official instructions](https://developer.nvidia.com/embedded/learn/getting-started-jetson) to get your board ready. This guide will assume you are using **NVIDIA® L4T Ubuntu 16.04/18.04** image. Note that in most cases it is necessary to install a toll named "SDK Manager" to flash and install **Jetson** boards with both the L4T (Linux for Tegra) and NVIDIA-specific software packages (CUDA, Tensor Flow, AI, etc.)
 For **Jetson Nano™** we strongly recommend enabling the Barrel Jack connector for extra power (See [jetsonhacks.com/jetson-nano-use-more-power/](https://www.jetsonhacks.com/2019/04/10/jetson-nano-use-more-power/) to learn how)
 
   ![Jetson Nano](./img/jetson.jpg)
 
-3. **Choose LibRealSense SDK Backend**  
+### 3. **Choose LibRealSense SDK Backend**  
 Librealsense2 SDK supports two API for communication with RealSense device on Linux platforms:
     1. Linux native kernel drivers for UVC, USB and HID (Video4Linux and IIO respectively)
     2. Using `RSUSB` - user-space implementation of the UVC and HID data protocols, encapsulated and activated by selecting the SDK's `-DFORCE_RSUSB_BACKEND` flag (a.k.a. `-DFORCE_LIBUVC` with SDK versions prior to v.2.30).  
 
   When the second method is selected Librealsense2 communicates with the devices using the standard USB driver, while the higher-level protocols  (UVC/HID) stacks are compiled directly into the SDK.
-  Currently the two interfaces are mutually-exclusive, thus the choice taken during the SDK configuration stage (CMakes) predefines the selected backend API.
+  
+> **Currently the two interfaces are mutually-exclusive, thus the choice taken during the SDK configuration stage (CMakes) predefines the selected backend API.**
 
   As a general rule it is recommended to use the native kernel drivers, especially in production environment.
 The second method augments the native installation and allows for a fully-functional SDK deployment at the expense of certain performance and functional limitations (e.g. multi-cam).
@@ -40,7 +41,7 @@ The list of requirements for the second method comprise of a basic USB driver an
 This guide comes with a script that allows to modify the kernel modules with Librealsense2-related patches without replacing the kernel image. The script has been verified with **Jetson AGX Xavier™** board using L4T versions 4.2.3, 4.3 and 4.4 (Sept 2020). Scroll to the end of the guide for details.
 
 
-4. **Install with Debian Packages**  
+### 4. **Install with Debian Packages**  
 Note that this method provides binary installation compiled using the `-DFORCE_RSUSB_BACKEND=true` option elaborated above.
 
   1. Register the server's public key:  
@@ -51,14 +52,17 @@ Note that this method provides binary installation compiled using the `-DFORCE_R
     > In case the public key cannot be retrieved, check and specify proxy settings: `export http_proxy="http://<proxy>:<port>"`, and rerun the command. See additional methods in the following [link](https://unix.stackexchange.com/questions/361213/unable-to-add-gpg-key-with-apt-key-behind-a-proxy).  
 
   2. Add the server to the list of repositories:  
-```sh
-sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u```
+```
+sh
+sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u
+```
 
   3. Install the SDK:
   ```
   sudo apt-get install librealsense2-utils
   sudo apt-get install librealsense2-dev
   ```
+  
   ![installation](./img/install-jetson.png)
 
 
@@ -69,7 +73,9 @@ sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(ls
   ![d400](./img/jetson-d400.png) ![t265](./img/jetson-t265.png)
 
   You can also double-TAB after typing `rs-` to see the full list of SDK examples.
-  
+
+---
+
 ## Building from Source using RSUSB Backend
 
 **Use the RSUSB backend without the kernel patching**
